@@ -15,6 +15,7 @@ export interface IStorage {
   getInvoice(id: number): Promise<Invoice | undefined>;
   createInvoice(invoice: InsertInvoice): Promise<Invoice>;
   updateInvoice(id: number, updates: UpdateInvoiceRequest): Promise<Invoice>;
+  updateInvoiceStatus(id: number, status: string): Promise<Invoice>;
   deleteInvoice(id: number): Promise<void>;
   
   getPreferences(): Promise<Preferences>;
@@ -44,6 +45,16 @@ export class DatabaseStorage implements IStorage {
     return updated;
   }
 
+  async updateInvoiceStatus(id: number, status: string): Promise<Invoice> {
+  const [updated] = await db
+    .update(invoices)
+    .set({ status })
+    .where(eq(invoices.id, id))
+    .returning();
+
+  return updated;
+}
+
   async deleteInvoice(id: number): Promise<void> {
     await db.delete(invoices).where(eq(invoices.id, id));
   }
@@ -64,6 +75,8 @@ export class DatabaseStorage implements IStorage {
       .where(eq(preferences.id, prefs.id))
       .returning();
     return updated;
+
+    
   }
 }
 

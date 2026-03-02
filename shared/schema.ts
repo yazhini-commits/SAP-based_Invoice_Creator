@@ -6,6 +6,7 @@ export const invoices = pgTable("invoices", {
   id: serial("id").primaryKey(),
   invoiceNumber: text("invoice_number").notNull(),
   data: jsonb("data").notNull(),
+  status: text("status").default("PENDING"), 
   createdAt: timestamp("created_at").defaultNow(),
 });
 

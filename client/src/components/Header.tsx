@@ -20,6 +20,7 @@ interface HeaderProps {
   onSave: () => void;
   onNew: () => void;
   onHistory: () => void;
+  onInvoices: () => void;
   onShare: () => void;
   onSettings: () => void;
   onPrint: () => void;
@@ -27,7 +28,7 @@ interface HeaderProps {
 }
 
 export function Header({ 
-  mode, setMode, onSave, onNew, onHistory, onShare, onSettings, onPrint, isSaving 
+  mode, setMode, onSave, onNew, onHistory, onInvoices, onShare, onSettings, onPrint, isSaving 
 }: HeaderProps) {
   
  
@@ -57,7 +58,7 @@ export function Header({
           <Save className="w-4 h-4 mr-1.5" /> {isSaving ? "Saving..." : "Save"}
         </Button>
         <div className="w-px h-5 bg-border mx-1"></div>
-        <Button variant="ghost" size="sm" onClick={onHistory} className="text-muted-foreground hover:text-foreground hidden sm:flex">
+        <Button variant="ghost" size="sm" onClick={onInvoices} className="text-muted-foreground hover:text-foreground hidden sm:flex">
           <FileText className="w-4 h-4 mr-1.5" /> Invoices
         </Button>
         <div className="w-px h-5 bg-border mx-1 hidden sm:block"></div>

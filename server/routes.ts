@@ -4,6 +4,7 @@ import { storage } from "./storage";
 import { api } from "@shared/routes";
 import { z } from "zod";
 
+
 export async function registerRoutes(
   httpServer: Server,
   app: Express
@@ -12,6 +13,7 @@ export async function registerRoutes(
     const items = await storage.getInvoices();
     res.json(items);
   });
+  
 
   app.get(api.invoices.get.path, async (req, res) => {
     const id = Number(req.params.id);
@@ -20,7 +22,8 @@ export async function registerRoutes(
     if (!item) return res.status(404).json({ message: "Invoice not found" });
     res.json(item);
   });
-
+  
+  
   app.post(api.invoices.create.path, async (req, res) => {
     try {
       const input = api.invoices.create.input.parse(req.body);
@@ -72,6 +75,27 @@ res.status(201).json(invoice);
       res.status(500).json({ message: "Internal error" });
     }
   });
+
+  app.patch("/api/invoices/:id/status", async (req, res) => {
+  try {
+    const id = Number(req.params.id);
+    if (isNaN(id)) {
+      return res.status(404).json({ message: "Invalid ID" });
+    }
+
+    const { status } = req.body;
+
+    if (!["PENDING", "PAID", "OVERDUE"].includes(status)) {
+      return res.status(400).json({ message: "Invalid status value" });
+    }
+
+    const updatedInvoice = await storage.updateInvoiceStatus(id, status);
+
+    res.json(updatedInvoice);
+  } catch (err) {
+    res.status(500).json({ message: "Internal error" });
+  }
+});
 
   app.delete(api.invoices.delete.path, async (req, res) => {
     const id = Number(req.params.id);

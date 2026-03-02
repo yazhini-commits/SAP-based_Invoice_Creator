@@ -15,6 +15,7 @@ import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 import { useInvoices } from "@/hooks/use-invoices";
 import { usePreferences } from "@/hooks/use-preferences";
+import { InvoicesDialog } from "@/components/InvoicesDialog";
 
 
 const handlePrint = async () => {
@@ -79,6 +80,7 @@ export default function Home() {
   const [mode, setMode] = useState<"form" | "preview">("form");
   const [prefOpen, setPrefOpen] = useState(false);
   const [historyOpen, setHistoryOpen] = useState(false);
+  const [invoicesOpen, setInvoicesOpen] = useState(false);
   const [shareOpen, setShareOpen] = useState(false);
 
   const methods = useForm<z.infer<typeof invoiceDataSchema>>({
@@ -160,6 +162,7 @@ const onInvalidSubmit = (errors: any) => {
         onSave={handleSubmit(onValidSubmit, onInvalidSubmit)}
         onNew={handleNew}
         onHistory={() => setHistoryOpen(true)}
+        onInvoices={() => setInvoicesOpen(true)}
         onShare={() => setShareOpen(true)}
         onSettings={() => setPrefOpen(true)}
         onPrint={handlePrint}
@@ -192,6 +195,17 @@ const onInvalidSubmit = (errors: any) => {
           setMode("form");
         }} 
       />
+    <InvoicesDialog
+  open={invoicesOpen}
+  onOpenChange={setInvoicesOpen}
+  onLoadInvoice={(data) => {
+    reset(data);
+    setMode("preview");
+    setInvoicesOpen(false);
+  }}
+  onDownload={handlePrint}
+/>
+
       <ShareDialog 
         open={shareOpen} 
         onOpenChange={setShareOpen} 
